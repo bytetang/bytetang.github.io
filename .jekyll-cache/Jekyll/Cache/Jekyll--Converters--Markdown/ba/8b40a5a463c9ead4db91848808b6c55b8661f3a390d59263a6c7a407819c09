@@ -1,0 +1,725 @@
+I"��<h2 id="空指针篇">空指针篇</h2>
+
+<ol>
+  <li>【建议】字符串比较，将常量放在前面</li>
+</ol>
+
+<p>case:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="kd">static</span> <span class="kd">final</span> <span class="nc">String</span> <span class="no">DOMESTIC</span> <span class="o">=</span> <span class="s">"1"</span>
+<span class="n">domestic</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="no">DOMESTIC</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>修正为：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="no">DOMESTIC</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">domestic</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<blockquote>
+  <p>页面间对象传参在数据不完整的情况下崩溃，多数情况下是因为接收到了空的传参未处理直接调用，建议不要依赖调用方的”安全”使用。</p>
+</blockquote>
+
+<ol>
+  <li>返回空列表替代null</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Product</span><span class="o">&gt;</span> <span class="nf">getAllLocale</span><span class="o">(){</span>
+     <span class="o">...</span>
+      <span class="k">if</span><span class="o">(</span><span class="n">productList</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">Product</span><span class="o">&gt;();</span>
+      <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<blockquote>
+  <p>return参数在后续会被使用，如果难以保证调用的地方都安全的调用了，最好还是不要返回null。</p>
+</blockquote>
+
+<ol>
+  <li>【建议】使用判空的工具类</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="c1">//字符换判空</span>
+<span class="n">android</span><span class="o">.</span><span class="na">text</span><span class="o">.</span><span class="na">TextUtils</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span>
+ 
+<span class="c1">//集合判空</span>
+<span class="nc">CustomListUtil</span><span class="o">.</span><span class="na">hasItem</span><span class="o">()|</span><span class="n">isNullOrEmpty</span><span class="o">()</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<blockquote>
+  <p>使用工具类的好处是，容易养成习惯并且避免取反等逻辑错写出现</p>
+</blockquote>
+
+<ol>
+  <li>【重要】使用String.valueOf(Object) 替代 Object.toString()</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="nc">User</span> <span class="n">user</span> <span class="o">=</span> <span class="o">..;</span>
+ 
+<span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"TAG"</span><span class="o">,</span><span class="n">user</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>更改为：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="nc">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">"TAG"</span><span class="o">,</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">user</span><span class="o">))</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>你的Deeplink/Router/CMPC每个参数都应该考虑空的情况</li>
+</ol>
+
+<p>契约类型，传入的参数较为自由，组合也比较多。即使规范好了调用方式，也可能存在非法的传入。请考虑每个参数为空的情况。</p>
+
+<ol>
+  <li>使用context和activity的引用时先判空</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="nc">Router</span><span class="o">.</span><span class="na">toLogin</span><span class="o">((</span><span class="nc">Activity</span><span class="o">)</span> <span class="n">view</span><span class="o">,</span>
+    <span class="k">new</span> <span class="nf">IRouterCallBack</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onResult</span><span class="o">(</span><span class="nc">String</span> <span class="n">module</span><span class="o">,</span> <span class="nc">String</span> <span class="n">page</span><span class="o">,</span> <span class="nc">Bundle</span> <span class="n">bundle</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">isLogin</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">setTitle</span><span class="o">(</span><span class="s">"test"</span><span class="o">)</span>
+     <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}));</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>onResult回调时，view可能已经被回收了。</p>
+
+<blockquote>
+  <p>activity被回收后调用容易引起内存泄漏，相对于找内存泄漏，空安全也可能让内存泄漏不Crash。</p>
+</blockquote>
+
+<h2 id="类型转换篇">类型转换篇</h2>
+
+<ol>
+  <li>【建议】注意你的String转Number的方法</li>
+</ol>
+
+<p>如：Double.valueOf(String),String.parseDouble(String) ，传入的类型如果不是数字格式的就会出错。做好合法性校验，甚至是trycatch。</p>
+
+<p>正确如下：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="o">(</span><span class="n">gatewayTime</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+<span class="k">try</span> <span class="o">{</span>
+		<span class="kt">double</span> <span class="n">gatewayTimeDouble</span> <span class="o">=</span> <span class="nc">Double</span><span class="o">.</span><span class="na">parseDouble</span><span class="o">(</span><span class="n">gatewayTime</span><span class="o">);</span>
+		<span class="n">serverCallParams</span><span class="o">.</span><span class="na">addCurrentServerCallExtraInfos</span><span class="o">(</span><span class="s">"gatewayTime"</span><span class="o">,</span> <span class="n">gatewayTimeDouble</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">);</span>
+	<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Throwable</span> <span class="n">ignore</span><span class="o">)</span> <span class="o">{</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>【重要】不要信任系统API返回的数据。转换操作一律trycatch.trycatch.</li>
+</ol>
+
+<p>错误示例:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="c1">//获取网络代理的状态</span>
+<span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">"http.proxyPort"</span><span class="o">))</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>这里返回的不一定是数字，可能的原因是安卓碎片太严重，有些厂商上的api就说不定了。</p>
+
+<ol>
+  <li>【重要】做好类型判断后再转换</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="o">(</span><span class="n">params</span> <span class="k">instanceof</span> <span class="nc">CoordinatorLayout</span><span class="o">.</span><span class="na">LayoutParams</span><span class="o">)</span> <span class="o">{</span>
+    <span class="o">((</span><span class="nc">CoordinatorLayout</span><span class="o">.</span><span class="na">LayoutParams</span><span class="o">)</span> <span class="n">params</span><span class="o">).</span><span class="na">setBehavior</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<blockquote>
+  <p>kotlin的话使用is关键字</p>
+</blockquote>
+
+<h2 id="线程安全篇">线程安全篇</h2>
+
+<p>1.【重要】你的单例安全吗</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="nc">DBHelper</span> <span class="n">instance</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+ 
+<span class="kd">public</span> <span class="kd">static</span> <span class="nc">DBHelper</span> <span class="nf">getDBHelper</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">instance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DBHelper</span><span class="o">()</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>在多线程的情况下dbHelper == null就不是一定成立的了，这就可能导致创建了多个实例出来，违背了单例的本意。</p>
+
+<blockquote>
+  <p>这里可以voliate 你的dbHelper，让这个变量对其他的线程可见。或者同步整个获取单例的操作，但是在频繁调用的情况下注意性能开销。</p>
+</blockquote>
+
+<p>线程安全单例示例：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Object</span> <span class="n">mutex</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="nc">IBULocaleManager</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">IBULocaleManager</span> <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">mutex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">result</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IBULocaleManager</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>或</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">IBULocaleManager</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">IBULocaleManager</span><span class="o">()</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<blockquote>
+  <p>在getInstance()比较频繁情况下，多数是命中非空直接实例的， 如果对整个getInstance方法加锁就会影响性能，这里只在为空需要初始化对象的时候同步和校验，大大降低了对性能的影响。</p>
+</blockquote>
+
+<ol>
+  <li>【建议】隐藏你可以私有的方法和变量</li>
+</ol>
+
+<p>如果你的方法不是一个线程安全的方法，且都是内部自己在调用（Java里面指在同一个类），请直接私有掉方法/变量，避免暴露出去让调用方引入了崩溃。</p>
+
+<ol>
+  <li>【重要】发现死锁</li>
+</ol>
+
+<ul>
+  <li>当心嵌套锁，</li>
+</ul>
+
+<p>如下：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="rouge-code"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="nc">Object</span> <span class="n">lock1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
+<span class="kd">private</span> <span class="kd">static</span> <span class="nc">Object</span> <span class="n">lock2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Object</span><span class="o">();</span>
+ 
+<span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Task</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">lock1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">lock2</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">lock1</span><span class="o">.</span><span class="na">wait</span><span class="o">();</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ul>
+  <li>获取锁设置超时</li>
+</ul>
+
+<p>多数情况下ReentrantLock可以替换synchronized，获取锁时设置一个超时时间，降低死锁风险。</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">lock1</span><span class="o">.</span><span class="na">tryLock</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">))</span> <span class="o">{}</span>
+    <span class="o">}</span>
+ <span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ul>
+  <li>正确释放锁
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="k">try</span><span class="o">{</span>
+  <span class="k">do</span><span class="o">...</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">){</span>
+  <span class="c1">//lock.unlock() 不要在这里释放锁，try block里面可能也没有释放，而这里只处理异常的场景</span>
+<span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+  <span class="c1">//这里释放锁最佳</span>
+  <span class="n">lock</span><span class="o">.</span><span class="na">unlock</span><span class="o">()</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>4.【重要】集合遍历要当心</p>
+
+<p>如果你没有选择线程安全的集合类（如CopyOnWriteArrayList)，那集合操作的地方都要当心了。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="rouge-code"><pre>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="o">...</span>
+<span class="kd">class</span> <span class="nc">RunableA</span> <span class="kd">implements</span> <span class="nc">Runable</span><span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
+        <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="k">new</span> <span class="nc">Random</span><span class="o">().</span><span class="na">next</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">RunableB</span> <span class="kd">implements</span> <span class="nc">Runable</span><span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
+        <span class="k">for</span><span class="o">(</span><span class="nc">String</span> <span class="nl">str:</span><span class="n">list</span><span class="o">{</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+            <span class="o">...</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>正确写法,操作集合的时候加同步：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre>
+<span class="kd">synchronized</span><span class="o">(</span><span class="n">list</span><span class="o">){</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="k">new</span> <span class="nc">Random</span><span class="o">().</span><span class="na">next</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">size</span><span class="o">));</span>
+<span class="o">}</span>
+
+<span class="kd">synchronized</span><span class="o">(</span><span class="n">list</span><span class="o">){</span>
+    <span class="k">for</span><span class="o">(</span><span class="nc">String</span> <span class="nl">str:</span><span class="n">list</span><span class="o">{</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<blockquote>
+  <p>为了保证锁的正确性和不必要的性能开销，最好<b>集合对象来作为对象锁</b>，避免使用this这种对象锁，匿名内部类的话锁的就可能不是一个对象了，锁也是无效的。</p>
+</blockquote>
+
+<ol>
+  <li>【重要】线程的取消和关闭</li>
+</ol>
+
+<p>这是个容易被忽视但是很重要的一点，如果你的线程不能响应错误的中断或者在任务结束的时候没有正确的关闭它，那么他们一直运转下去，资源开销等也一直存在，间接引发其他问题。</p>
+
+<ul>
+  <li>ExecuteService shutdown()</li>
+</ul>
+
+<p>正确的stop</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>  
+    <span class="k">try</span> <span class="o">{</span>  
+        <span class="n">exec</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span> 
+        <span class="n">exec</span><span class="o">.</span><span class="na">awaitTermination</span><span class="o">(</span><span class="no">TIMEOUT</span><span class="o">,</span> <span class="no">UNIT</span><span class="o">);</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>  
+</pre></td></tr></tbody></table></code></pre></div></div>
+<blockquote>
+  <p>需要区分shudown()和shutdownNow()的区别，如果你已经submit的task还想继续得到执行请不要使用和shutdownNow。</p>
+</blockquote>
+
+<ul>
+  <li>“毒丸”/”标志位”中断</li>
+</ul>
+
+<p>投放”毒丸”</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="kd">private</span> <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">canceled</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>遇到毒丸放弃</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">while</span><span class="o">(!</span><span class="n">canceled</span><span class="o">){</span>
+    <span class="n">doTask</span><span class="o">()</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ul>
+  <li>Future cancle</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="nc">Future</span> <span class="n">future</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="na">submit</span><span class="o">(</span><span class="k">new</span> <span class="nc">Task</span><span class="o">());</span>
+<span class="k">try</span> <span class="o">{</span>
+   <span class="c1">// 可能抛出异常</span>
+   <span class="n">future</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">ExecutionException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+<span class="o">}</span><span class="k">finally</span> <span class="o">{</span>
+    <span class="c1">//终止任务的执行</span>
+    <span class="n">future</span><span class="o">.</span><span class="na">cancel</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h2 id="android其他篇">Android其他篇</h2>
+
+<p>1、数据库的操作</p>
+
+<ul>
+  <li>确保操作的helper类是单例的并考虑了线程安全问题。</li>
+  <li>查询的时候尽量使用索引</li>
+  <li>避免DB过大，会引入较多的系统性问题</li>
+</ul>
+
+<p><br /></p>
+<ol>
+  <li>【重要】混淆类问题</li>
+</ol>
+
+<ul>
+  <li>接入第三方库或者底层库的时候要阅读和关注混淆规则的接入</li>
+  <li>反射调用的类/方法检查不能混淆，引发导致classnotfound</li>
+</ul>
+
+<p><br /></p>
+<ol>
+  <li>【建议】注意字符串拼接性能</li>
+</ol>
+
+<p>避免大量字符串”+”的操作</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s">"start"</span><span class="o">;</span>
+<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span><span class="mi">0</span> <span class="o">;</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+    <span class="n">str</span> <span class="o">=</span> <span class="n">str</span> <span class="o">+</span> <span class="s">"trip"</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<blockquote>
+  <p>建议使用StringBuiler/StringBuffer等完成</p>
+</blockquote>
+
+<ol>
+  <li>【建议】注意字符串分隔性能</li>
+</ol>
+
+<p>避免在会被频繁调用的方法中使用以下方式分隔字符串</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s">"hello-world"</span><span class="o">;</span>
+<span class="nc">String</span><span class="o">[]</span> <span class="n">results</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>请使用性能更好的<code class="language-plaintext highlighter-rouge">indexOf()+substring(from+1, to)</code>组合</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="s">"hello-world"</span><span class="o">;</span>
+<span class="kt">int</span> <span class="n">from</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'-'</span><span class="o">);</span>
+<span class="kt">int</span> <span class="n">to</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="sc">'-'</span><span class="o">,</span> <span class="n">from</span><span class="o">+</span><span class="mi">1</span><span class="o">);</span>
+<span class="nc">String</span> <span class="n">brown</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">from</span><span class="o">+</span><span class="mi">1</span><span class="o">,</span> <span class="n">to</span><span class="o">);</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>【重要】别在写内存泄漏了！</li>
+</ol>
+
+<p><b>HandlerLeak</b></p>
+
+<p>原因：Handler在Android中用于消息的发送与异步处理（MessageQueue)，常常在Activity中作为一个匿名内部类来定义，此时Handler会隐式地持有一个外部类对象（通常是一个Activity）的引用。当Activity已经被用户关闭时，内部的Handler还被MessageQueue保留着，Handler持有的Activity引用造成Activity无法被GC回收，这样容易造成内存泄露。</p>
+
+<p>正确的做法是将其定义成一个静态内部类（此时不会持有外部类对象的引用），在构造方法中传入Activity并对Activity对象增加一个弱引用，这样Activity被用户关闭之后，即便异步消息还未处理完毕，Activity也能够被GC回收，从而避免了内存泄露。</p>
+
+<p>风险代码：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyActivity</span> <span class="kd">extends</span> <span class="nc">AppCompatActivity</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Handler</span> <span class="n">mHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Handler</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleMessage</span><span class="o">(</span><span class="nc">Message</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">};</span>
+    <span class="o">};</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>正确案例:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">MyHandler</span> <span class="kd">extends</span> <span class="nc">Handler</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">WeakReference</span><span class="o">&lt;</span><span class="nc">Activity</span><span class="o">&gt;</span> <span class="n">reference</span><span class="o">;</span>
+ 
+    <span class="kd">public</span> <span class="nf">MyHandler</span><span class="o">(</span><span class="nc">Activity</span> <span class="n">activity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">WeakReference</span><span class="o">&lt;</span><span class="nc">Activity</span><span class="o">&gt;(</span><span class="n">activity</span><span class="o">);</span>
+    <span class="o">}</span>
+ 
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">handleMessage</span><span class="o">(</span><span class="nc">Message</span> <span class="n">msg</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">reference</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">switch</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">what</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+            <span class="c1">// do something...</span>
+            <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+            <span class="c1">// do something...</span>
+            <span class="k">break</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p><b>StaticFieldLeak</b>
+原因：静态对象/变量的生命周期是从第一次被JVM加载到内存一直到程序退出，其余的时间，垃圾回收机制都不会去回收它。</p>
+
+<p>错误案例：单例中传入context/activity。导致context/acitivity没有办法及时回收、引起内存泄漏</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MapNavigationUtil</span> <span class="o">{</span>
+       <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Context</span> <span class="n">mContext</span><span class="o">;</span>
+       <span class="kd">private</span> <span class="kd">static</span> <span class="nc">MapNavigationUtil</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MapNavigationUtil</span><span class="o">();</span>
+       <span class="kd">private</span> <span class="nf">MapNavigationUtil</span><span class="o">()</span> <span class="o">{}</span>
+       <span class="kd">public</span> <span class="kd">static</span> <span class="nc">MapNavigationUtil</span> <span class="nf">getInstance</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">;</span>
+            <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>正确写法:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MapNavigationUtil</span> <span class="o">{</span>
+       <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Context</span> <span class="n">mContext</span><span class="o">;</span>
+       <span class="kd">private</span> <span class="kd">static</span> <span class="nc">MapNavigationUtil</span> <span class="n">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MapNavigationUtil</span><span class="o">();</span>
+       <span class="kd">private</span> <span class="nf">MapNavigationUtil</span><span class="o">()</span> <span class="o">{}</span>
+       <span class="kd">public</span> <span class="kd">static</span> <span class="nc">MapNavigationUtil</span> <span class="nf">getInstance</span><span class="o">(</span><span class="nc">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getApplicationContext</span><span class="o">();</span> <span class="c1">//使用applicationContext</span>
+            <span class="k">return</span> <span class="n">instance</span><span class="o">;</span>
+        <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ol>
+  <li>【重要】正确使用@TargetApi注解
+这个仅用于高版本编译兼容，不代表只会被高版本调用。</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="nd">@TargetApi</span><span class="o">(</span><span class="nc">Build</span><span class="o">.</span><span class="na">VERSION_CODES</span><span class="o">.</span><span class="na">LOLLIPOP</span><span class="o">)</span>
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setupToolbar</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">mRlToolbar</span><span class="o">.</span><span class="na">setElevation</span><span class="o">(</span><span class="nc">ViewUtil</span><span class="o">.</span><span class="na">dp2px</span><span class="o">(</span><span class="n">getContext</span><span class="o">(),</span> <span class="mi">2</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>低于LOLLIPOP版本的也会调用次方法出现崩溃的情况，如果是为了区分不同版本的调用，使用Build变量做判断。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="o">(</span><span class="nc">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="nc">Build</span><span class="o">.</span><span class="na">VERSION_CODES</span><span class="o">.</span><span class="na">LOLLIPOP</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">setupToolbar</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>【重要】避免show dialog 出现BadTokenException</li>
+</ol>
+
+<p>正确show的方式:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">if</span><span class="o">(</span><span class="n">getActivity</span><span class="o">()!=</span><span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">isFinishing</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">alert</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>Toast/DialogFragment/AlertDialog/Dialog的使用均要注意。</p>
+
+<blockquote>
+  <p>原因是activity可能已经被销毁了，上下文context也随之被销毁，这个时候再试图去show，就会出现Crash.</p>
+</blockquote>
+
+<ol>
+  <li>【重要】异步show DialogFragment 使用 commitAllowingStateLoss代替show/commit方法</li>
+</ol>
+
+<p>android 不允许在activity的onSaveInstanceState调用之后再改变状态，比如添加或移除fragment。如果系统在可能回收了activity之后仍然有异步的commit等操作，就会出现state loss的crash.</p>
+
+<p>解决方案：</p>
+
+<p>使用commitAllowingStateLoss()代替FragmentTransaction commit或show方法。</p>
+
+<p>正确示例：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">showDialog</span><span class="o">(</span><span class="nc">FragmentActivity</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">context</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">context</span><span class="o">.</span><span class="na">isFinishing</span><span class="o">())</span> <span class="o">{</span>
+       <span class="nc">FragmentTransaction</span> <span class="n">ft</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getSupportFragmentManager</span><span class="o">().</span><span class="na">beginTransaction</span><span class="o">();</span>
+       <span class="n">ft</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="s">"PushAccessAuthDialog"</span><span class="o">);</span>
+       <span class="n">ft</span><span class="o">.</span><span class="na">commitAllowingStateLoss</span><span class="o">();</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<ol>
+  <li>【重要】Fragment commit vs commitAllowingStateLoss</li>
+</ol>
+
+<p>添 加 Fragment 时，确保 FragmentTransaction#commit() 在Activity#onPostResume()或者 FragmentActivity#onResumeFragments()内调用。
+不要随意使用 FragmentTransaction#commitAllowingStateLoss()来代替，任何commitAllowingStateLoss()的使用必须经过 code review，确保无负面影响。</p>
+
+<p><img src="/assets/images/activity_lifecycle.png" alt="index page" /></p>
+:ET

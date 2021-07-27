@@ -1,8 +1,15 @@
 ---
-layout: post
-title:  "从零搭建Android持续集成平台"
-description: Bundle打包和持续集成思路跟踪
-categories: [blog, Android]
+title: "从零搭建Android持续集成平台"
+author: Morse
+date: 2018-03-26
+categories: [Blogging, CI]
+tags: [CI, Android]
+math: true
+mermaid: true
+# image:
+#   src: https://cdn.jsdelivr.net/gh/cotes2020/chirpy-images/commons/devices-mockup.png
+#   width: 850
+#   height: 585
 ---
 
 Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。

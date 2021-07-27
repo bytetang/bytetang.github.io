@@ -1,0 +1,94 @@
+[
+  
+  {
+    "title": "OAuth2.0认证授权workflow",
+    "url": "/posts/workflow-sso/",
+    "categories": "Blogging, Foundation",
+    "tags": "Login",
+    "date": "2019-04-01 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "在设计一个系统的时候大多数都需要一个登陆授权的方案来保证访问安全和权限的控制。好在我们有类似于spring这样的框架，更多的时候只需要完成几行配置就能工作。这也让开发者忽略了他的工作流程和原理,就通过这篇文章来认识探讨下。首先抛出一个概念：SSO单点登录（Single Sign On）。SSO&amp;amp;CAS其定义为：  SSO是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。它包括可以将这次主要的登录映射到其他应用中用于同一个用户的登录的机制。它是目前比较流行的企业业务整合的解决方案之一。SSO这是一个概念方案，其中有我们经常听到的著名的耶鲁大学的CAS系..."
+  },
+  
+  {
+    "title": "安卓并发编程全解析",
+    "url": "/posts/threading/",
+    "categories": "Blogging, Android",
+    "tags": "Thread, Android",
+    "date": "2019-03-27 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "多线程是开发中较为高阶的知识，但是涉及到的知识点非常的多。设计或写多线程的代码需要谨慎处理，前提是我们要有比较系统性的认识。一、从Thread Stack认识线程在android开发中我们通常会在发生卡顿或者ANR的时候，去拿手机里的traces.txt做分析，这里面dump了ANR出现时的线程状态。我们以traces.txt里面的堆栈为例，认识下线程。位置: data/anr/traces.txtcmd: adb pull data/anr/traces.txt ~/Downloads/anr/&quot;main&quot; prio=5 tid=1 Native  | group=..."
+  },
+  
+  {
+    "title": "Android Code Review",
+    "url": "/posts/android-codereview/",
+    "categories": "Blogging, Android",
+    "tags": "CodeReview, Android",
+    "date": "2019-02-27 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "空指针篇  【建议】字符串比较，将常量放在前面case:static final String DOMESTIC = &quot;1&quot;domestic.equals(DOMESTIC);修正为：DOMESTIC.equals(domestic);  页面间对象传参在数据不完整的情况下崩溃，多数情况下是因为接收到了空的传参未处理直接调用，建议不要依赖调用方的”安全”使用。  返回空列表替代nullList&amp;lt;Product&amp;gt; getAllLocale(){     ...      if(productList == null){         ret..."
+  },
+  
+  {
+    "title": "Applink",
+    "url": "/posts/applink/",
+    "categories": "Blogging, Android",
+    "tags": "Applink, Android",
+    "date": "2019-01-15 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "内容概念：  概念及分类  市场使用  唤起App机制  流转过程App Link通过一些技术手段有途径能唤起我们app的URI，我们统称为App Link唤醒技术手段  Uri Scheme（DeepLink）  Universal Link（iOS）、App Links（Android）  Deferred DeepLinkUri Scheme格式：customschema://host/path?params直接跳转  h5中模拟点击链接（Android）  设置window.location.href（iOS）iframe（iOS9之后不支持，chrome 25之后不支持）  在..."
+  },
+  
+  {
+    "title": "Mask掩码运算及其应用",
+    "url": "/posts/mask/",
+    "categories": "Blogging, Foundation",
+    "tags": "CI, Mask",
+    "date": "2018-12-16 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "我们在阅读源码的时候经常会看到有mask flag的与或运算，往往出现在判断的语句中，另我十分的困惑。一、认识Mask flag    /**     * Returns the enabled status for this view. The interpretation of the     * enabled state varies by subclass.     *     * @return True if this view is enabled, false otherwise.     */    @ViewDebug.ExportedProperty    pub..."
+  },
+  
+  {
+    "title": "从零搭建Android持续集成平台",
+    "url": "/posts/android-ci/",
+    "categories": "Blogging, CI",
+    "tags": "CI, Android",
+    "date": "2018-03-26 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。  文章内容有限，更多是提供思路，涉及要有些技术细节不做细致描述。具体的可以回复或者私信沟通。需要解决的问题列举如下：  Library工程模块能够快速、便捷提供静态包。  Bundle以及静态库版本的管理。  自动化的模块集成。  可视化的操作平台。使用maven仓库管理静态gradle支持静态的管理方式有多种方式。方式一：Local本地管理rep..."
+  }
+  
+]
+

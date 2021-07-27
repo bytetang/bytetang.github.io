@@ -1,44 +1,53 @@
+---
+layout: compress
+# Default layout
+---
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{{ site.name }}{% if page.title %} - {{ page.title }}{% endif %}</title>
-  <link rel="shortcut icon" href="{{ "/" | relative_url  }}assets/images/favicon.ico">
-  <link rel="stylesheet" href="{{ "/" | relative_url  }}assets/css/style.css">
-  <link rel="alternate" type="application/rss+xml" title="My Blog" href="{{ "/" | relative_url  }}feed.xml">
-  <link rel="stylesheet" href="{{ "/" | relative_url  }}assets/css/highlight.css">
-</head>
-<body>
-
-  {% include navigation.html %}
-
-  {% if page.profile %}
-      {% include profile.html %}
+{% capture prefer_mode %}
+  {% if site.theme_mode %}
+    mode="{{ site.theme_mode }}"
   {% endif %}
+{% endcapture %}
 
-  <section id="wrapper" class="{% if page.profile %}home{% endif %}">
-    {{ content }}
-  </section>
+<html lang="{{ site.content_lang | default: site.lang }}" {{ prefer_mode }}>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="{{ "/" | relative_url  }}assets/js/main.js"></script>
-  <script src="{{ "/" | relative_url  }}assets/js/highlight.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
+  {% include head.html %}
 
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <body data-spy="scroll" data-target="#toc">
 
-    ga('create', '{{ site.google_analytics }}', 'auto');
-    ga('send', 'pageview');
-  </script>
-</body>
+    {% include sidebar.html %}
+
+    {% include topbar.html %}
+
+    <div id="main-wrapper">
+      <div id="main">
+
+        {% include refactor-content.html content=content %}
+
+        {% include footer.html %}
+
+      </div>
+
+      {% include search-results.html %}
+
+    </div> <!-- #main-wrapper -->
+
+    {% if page.mermaid %}
+      {% include mermaid.html %}
+    {% endif %}
+
+    <div id="mask"></div>
+
+    <a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    {% include search-loader.html %}
+
+    {% include js-selector.html %}
+
+  </body>
+
 </html>
-
-
-

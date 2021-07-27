@@ -1,7 +1,12 @@
 ---
 title:  "Android Code Review"
 description: 囊括大部分安卓开发容易犯的错，整理成条文
-## date: add a date when publishing
+author: Morse
+date: 2019-02-27
+categories: [Blogging, Android]
+tags: [CodeReview, Android]
+math: true
+mermaid: true
 ---
 
 ## 空指针篇

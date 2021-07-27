@@ -2,7 +2,12 @@
 layout: post
 title: "OAuth2.0认证授权workflow"
 description: 基础知识，了解鉴权和登陆的流程
-categories: [Login, SSO]
+author: Morse
+date: 2019-04-01
+categories: [Blogging, Foundation]
+tags: [Login]
+math: true
+mermaid: true
 ---
 
 在设计一个系统的时候大多数都需要一个登陆授权的方案来保证访问安全和权限的控制。好在我们有类似于spring这样的框架，更多的时候只需要完成几行配置就能工作。这也让开发者忽略了他的工作流程和原理,就通过这篇文章来认识探讨下。首先抛出一个概念：SSO单点登录（Single Sign On）。

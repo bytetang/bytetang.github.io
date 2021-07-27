@@ -1,8 +1,12 @@
 ---
-layout: post
 title:  "安卓并发编程全解析"
 description: "线程堆栈解析，锁以及锁的优化，性能与测试"
-categories: [blog, Android基础]
+author: Morse
+date: 2019-03-27
+categories: [Blogging, Android]
+tags: [Thread, Android]
+math: true
+mermaid: true
 ---
 
 多线程是开发中较为高阶的知识，但是涉及到的知识点非常的多。设计或写多线程的代码需要谨慎处理，前提是我们要有比较系统性的认识。
