@@ -1,0 +1,312 @@
+I"�Z<p>Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。</p>
+
+<blockquote>
+  <p>文章内容有限，更多是提供思路，涉及要有些技术细节不做细致描述。具体的可以回复或者私信沟通。</p>
+</blockquote>
+
+<p>需要解决的问题列举如下：</p>
+<ul>
+  <li>Library工程模块能够快速、便捷提供静态包。</li>
+  <li>Bundle以及静态库版本的管理。</li>
+  <li>自动化的模块集成。</li>
+  <li>可视化的操作平台。</li>
+</ul>
+
+<p><br />
+<br /></p>
+<h1>使用maven仓库管理静态</h1>
+
+<p>gradle支持静态的管理方式有多种方式。</p>
+<h2>方式一：Local本地管理</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td> --><td class="rouge-code"><pre><span class="n">repositories</span> <span class="o">{</span>
+    <span class="n">flatDir</span> <span class="o">{</span>
+        <span class="n">dirs</span> <span class="err">'</span><span class="n">libs</span><span class="err">'</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>本地依赖可以在离线状态下工作，弊端就是静态库的目录需要跟随git去发布。固定版本的依赖还需要通知更新。</p>
+
+<h2>方式二:Maven仓库管理</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td> --><td class="rouge-code"><pre><span class="n">maven</span> <span class="o">{</span>
+     <span class="n">url</span> <span class="err">'</span><span class="o">***/</span><span class="n">repo</span><span class="o">/</span><span class="err">'</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>中央仓库通常可以download常用的各版本依赖库。google的某些库甚至需要翻墙，企业建议搭建自己的nexus仓库，用于管理自己的日常静态库发布。
+nexus的搭建网上比较多不做详述。</p>
+
+<p>那么Android该如何上传自己的静态库：</p>
+
+<p>gradle官方有upload插件和详细的教程，这里贴上最佳实践：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td> --><td class="rouge-code"><pre><span class="n">module</span> <span class="n">build</span><span class="o">.</span><span class="na">gradle</span>
+<span class="n">apply</span> <span class="nl">plugin:</span> <span class="err">'</span><span class="n">maven</span><span class="err">'</span>
+<span class="n">uploadArchives</span> <span class="o">{</span>
+   <span class="n">repositories</span><span class="o">.</span><span class="na">mavenDeployer</span> <span class="o">{</span>
+           <span class="n">repository</span><span class="o">(</span><span class="nl">url:</span><span class="s">"${project.ext.uploadRepo}"</span><span class="o">)</span> <span class="o">{</span>
+               <span class="cm">/* nexus maven权限用户名密码 */</span>
+               <span class="n">authentication</span><span class="o">(</span><span class="nl">userName:</span> <span class="s">""</span><span class="o">,</span> <span class="nl">password:</span> <span class="s">""</span><span class="o">)</span>  
+               <span class="n">pom</span><span class="o">.</span><span class="na">groupId</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">groupId</span>
+               <span class="n">pom</span><span class="o">.</span><span class="na">artifactId</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">artifactId</span>
+               <span class="n">pom</span><span class="o">.</span><span class="na">version</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">versionName</span>
+           <span class="o">}</span>
+       <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>配置上传的信息到module的build.gradle文件</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td> --><td class="rouge-code"><pre><span class="n">project</span><span class="o">.</span><span class="na">ext</span> <span class="o">{</span>
+   <span class="n">groupId</span> <span class="o">=</span> <span class="s">"com.test"</span> 
+   <span class="n">versionName</span> <span class="o">=</span> <span class="s">"1.0.0"</span>
+   <span class="n">artifactId</span> <span class="o">=</span> <span class="s">"android-common"</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>进入项目根路径,module_name为需要发布静态库library module的名称,执行</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre><span class="o">./</span><span class="n">gradlew</span> <span class="o">:</span><span class="nl">module_name:</span><span class="n">uploadArchives</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>dependency依赖方式：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre><span class="n">compile</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">ctrip</span><span class="o">:</span><span class="n">android</span><span class="o">-</span><span class="nl">common:</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="nd">@aar</span><span class="err">'</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>以上可以完成静态库发布/升级到maven仓库的流程。依赖的发布和升级管理管理已经方便了很多，不过只能开发在本地运行脚本来完成，版本号的更新依然需要通过修改build.gradle中的ext版本提交才行。发布的流程比较繁琐而且容易导致冲突。</p>
+
+<p>以上，可以进一步的自动化。</p>
+
+<h1>Jenkins 持续集成</h1>
+
+<p>Jenkin专注ci，被广泛的应用在java和android的持续集成应用方面。Jenkins job的设计和丰富的plugin让我们可以不用过多繁杂的功能编码和部署。这里重点应用到其中Job（pipline/freestyle job）、Webhook、SCM（版本管理工具）的特性。</p>
+
+<h3>目标</h3>
+
+<p>非本地打包上传静态库,让jenkins自动完成打包、上传以及版本控制。</p>
+
+<h3>步骤</h3>
+
+<p><img src="/assets/images/jekins_step.png" alt="index page" /></p>
+
+<h3>Job 类型</h3>
+
+<p>Jenkins支持多种类型的job，其中常用的是Freestyle project、maven project、pipline。freestyle可以定制程度比较高，默认集成了SCM工具，能够支持大多数常用的构建脚本语言。maven project 一般应用在maven构建的工程。pipline有比较直观的步骤和日志预览，较之于freestyle类型的job只能支持groovy的语法且不能直接在平台上预览workspace内容。android工程由gradle构建工具来负责打包，为了更直观的效果使用pipline也是可以满足需求的。</p>
+
+<h3>Download git source</h3>
+
+<p>需要构建的工程每次需要从git仓库拉取，再从本地workspace直接构建生成产物。选择freelinestyle job可以直接通过Source Code Management 选项配置下Git url 和branch。启动job的时候会自动根据配置下载工程代码到workspace。如果是pipline job类型，无法使用SCM，可以通过书写pipline script（groovy）来完成。</p>
+
+<p>方式:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td> --><td class="rouge-code"><pre><span class="n">node</span> <span class="o">{</span>
+   <span class="n">stage</span><span class="o">(</span><span class="err">'</span><span class="nc">Preparation</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span> 
+     <span class="cm">/* ssh get build script repository，ssh-url填充你的git url */</span>
+     <span class="n">git</span> <span class="nl">url:</span><span class="err">'</span><span class="n">git</span><span class="nd">@ssh</span><span class="o">-</span><span class="n">url</span><span class="err">'</span><span class="o">,</span><span class="nl">branch:</span><span class="err">'</span><span class="n">master</span><span class="err">'</span>
+   <span class="o">}</span>
+<span class="o">...</span> <span class="n">此处省略其他stage</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h3>构建</h3>
+
+<p>build-script里面包含了打包和上传的脚本。</p>
+
+<p>编译/打包module核心：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre><span class="o">./</span><span class="n">gradlew</span> <span class="n">clean</span> <span class="n">assembleRelease</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h3>上传</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre><span class="o">./</span><span class="n">gradlew</span> <span class="o">:</span><span class="nl">module_name:</span><span class="n">uploadArchives</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>本人善用python，而且适用Linux/windows/macos任何平台。编译和上传的步骤这里假设包装到android_bundle_build.py文件里。这里建议把脚本也放到版本控制git repo或者工程仓库里面，同样通过SCM工具或者pipline script下载下来脚本所在的工程。接下来让jenkins job自动执行此脚本。pipline stage命名为”Build”嵌入到上个步骤的node阶段。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td> --><td class="rouge-code"><pre><span class="n">stage</span><span class="o">(</span><span class="err">'</span><span class="nc">Preparation</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span> 
+   <span class="cm">/* download project source and build script source */</span>
+<span class="o">}</span>
+<span class="n">state</span><span class="o">(</span><span class="err">'</span><span class="nc">Build</span><span class="err">'</span><span class="o">){</span>
+   <span class="cm">/* sh call build script*/</span>
+   <span class="n">sh</span> <span class="err">'</span><span class="n">python</span> <span class="n">android_bundle_build</span><span class="o">.</span><span class="na">py</span>  <span class="n">构建参数</span> <span class="err">'</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>实际上打包还是需要一些参数传入的，如上文project.ext节点的groupId、versionName 、artifactId的信息。jenkines脚本支持参数的传入配置并且直接在脚本中获取变量。</p>
+
+<p>Project setting中勾选This project is parameterized选项，添加对应所需类型的参数，如下：</p>
+
+<p><img src="/assets/images/jekins_params.png" alt="index page" /></p>
+
+<p>此时start job时候点击Build with Parameters就可以看到一个可填入内容的网页，填入后又jenkins传入job刚才设置的变量中：</p>
+
+<p><img src="/assets/images/jekins_params2.png" alt="index page" /></p>
+
+<h3>变量的使用</h3>
+
+<p>获取变量后传入到打包脚本，供打包脚本使用：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre><span class="n">sh</span> <span class="err">'</span><span class="n">python</span> <span class="n">android_bundle_build</span><span class="o">.</span><span class="na">py</span>  <span class="o">-</span><span class="n">groupId</span> <span class="n">$groupId</span> <span class="o">-</span><span class="n">artifactId</span> <span class="n">$artifactId</span> <span class="o">-</span><span class="n">version</span> <span class="n">$version</span><span class="err">'</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p><b>$变量名 即可获得页面填写的变量值（groovy 语法）。</b></p>
+
+<h3>版本升级</h3>
+
+<p>完成了自动发布和升级静态库，实际上其他的开发的同学还是获取不到最新的依赖版本。
+build.gradle中的依赖版本</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td> --><td class="rouge-code"><pre><span class="cm">/* 此处的version还是没有得到更新的*/</span>
+<span class="n">compile</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">test</span><span class="err">@</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="nd">@aar</span><span class="err">'</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p><b>解决方案</b></p>
+
+<p>提取gradle的依赖到配置文件version_config.xml</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td> --><td class="rouge-code"><pre><span class="o">&lt;?</span><span class="n">xml</span> <span class="n">version</span><span class="o">=</span><span class="err">'</span><span class="mf">1.0</span><span class="err">'</span> <span class="n">encoding</span><span class="o">=</span><span class="err">'</span><span class="n">utf8</span><span class="err">'</span><span class="o">?&gt;</span>
+<span class="o">&lt;</span><span class="nc">Module</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nc">Module</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">name</span><span class="o">&gt;</span><span class="nc">CommonModule</span><span class="o">&lt;/</span><span class="n">name</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="na">test</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">android</span><span class="o">-</span><span class="n">common</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">versionName</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">versionName</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nc">Module</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nc">Module</span><span class="o">-</span><span class="n">list</span><span class="o">&gt;</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>gradle解析version.config。解析文件：parse_version.gradle</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td> --><td class="rouge-code"><pre><span class="n">def</span> <span class="nf">parseXml</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">def</span> <span class="n">modules</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">XmlParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="n">rootDir</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">()</span> <span class="o">+</span> <span class="s">"/config/version_config.xml"</span><span class="o">);</span>
+  <span class="n">modules</span><span class="o">.</span><span class="na">Module</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span>
+  <span class="n">def</span> <span class="n">moduleName</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">text</span><span class="o">();</span>
+  <span class="n">def</span> <span class="n">moduleGroupId</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">groupId</span><span class="o">.</span><span class="na">text</span><span class="o">();</span>
+  <span class="n">def</span> <span class="n">moduleArtifactId</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">artifactId</span><span class="o">.</span><span class="na">text</span><span class="o">();</span>
+  <span class="n">def</span> <span class="n">moduleVersionName</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="na">versionName</span><span class="o">.</span><span class="na">text</span><span class="o">();</span>
+
+  <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">StringBuffer</span> <span class="n">str</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">();</span>
+       <span class="n">str</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">moduleGroupId</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">":"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">moduleArtifactId</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">":"</span><span class="o">)</span>
+                                       <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">moduleVersionName</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">"@aar"</span><span class="o">);</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">reference</span> <span class="n">in</span> <span class="n">rootProject</span><span class="o">.</span><span class="na">ext</span><span class="o">)</span> <span class="o">{</span>
+           <span class="n">reference</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">moduleName</span><span class="o">,</span> <span class="n">str</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+<span class="k">break</span><span class="o">;</span>
+       <span class="o">}</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>最外层build.gradle中apply parse_version.gradle：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td> --><td class="rouge-code"><pre>apply from: rootDir.getAbsolutePath() + "/script/parse_version.gradle"
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>此时的依赖方式更改为：</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><!-- <td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td> --><td class="rouge-code"><pre><span class="cm">/* 此处的version从version_config中获取 */</span>
+<span class="n">compile</span> <span class="n">rootProject</span><span class="o">.</span><span class="na">CommonModule</span> 
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>CommonModule即为version_config.xml中定义的name节点。</p>
+
+<p>到这里只差一步，那就是<b>jenkins打包上传之后自动升级version_config中的versionName</b>。</p>
+
+<p>为了让大家都能得到更新，可以在job完成的时候通过git api直接修改并提交version_config中的versionName。</p>
+
+<p>同样可以使用python来完成。python有成熟的git/gitlab/svn工具包。这里推荐几个：</p>
+
+<p><a href="http://link.zhihu.com/?target=https%3A//github.com/python-gitlab/python-gitlab">python-gitlab/python-gitlab</a></p>
+
+<p><a href="http://link.zhihu.com/?target=http%3A//gitpython.readthedocs.io/en/stable/tutorial.html">GitPython Tutorial</a></p>
+
+<p>对应具体的git/gitlab 修改文件api</p>
+
+<p>如gitlab v3 api：</p>
+
+<p><img src="/assets/images/gitlab_api.png" alt="index page" /></p>
+
+<p>完成modify_version_config.py的功能之后，同理去state节点去执行自动的任务。</p>
+
+<p>至此。自动打包升级的功能就完成了，jenkines有简易的操作界面。可以去可视化的一键打包啦：</p>
+
+<p><img src="/assets/images/jekins_piple_view.png" alt="index page" /></p>
+
+<p>进入对应job视图，点击 Build With Parameter按钮，填入必须参数。启动！</p>
+
+<p>似乎蛮简陋的。自己或者小规模团队用用还可以。做更好的产品，还是需要更进一步的完成.</p>
+:ET

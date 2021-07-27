@@ -1,0 +1,86 @@
+I"�<p>内容概念：</p>
+
+<ul>
+  <li>概念及分类</li>
+  <li>市场使用</li>
+  <li>唤起App机制</li>
+  <li>流转过程</li>
+</ul>
+
+<h1>App Link</h1>
+
+<p>通过一些技术手段有途径能唤起我们app的URI，我们统称为App Link</p>
+
+<h1>唤醒技术手段</h1>
+
+<ul>
+  <li>Uri Scheme（DeepLink）</li>
+  <li>Universal Link（iOS）、App Links（Android）</li>
+  <li>Deferred DeepLink</li>
+</ul>
+
+<h2>Uri Scheme</h2>
+
+<p>格式：customschema://host/path?params</p>
+
+<p><b>直接跳转</b></p>
+
+<ul>
+  <li>h5中模拟点击链接（Android）</li>
+  <li>设置window.location.href（iOS）</li>
+</ul>
+
+<p><b>iframe（iOS9之后不支持，chrome 25之后不支持）</b></p>
+
+<ul>
+  <li>在body上添加iframe，设置src为跳转的Uri</li>
+</ul>
+
+<h2>Universal Link</h2>
+
+<p><b>iOS Universal Links</b></p>
+
+<ul>
+  <li>通过universal link唤起app，手机后右上角会有xxx.xx小箭头，用户点击之后系统会记住用户行为，universal link之后会不生效，需要重新提示用户触发universal link</li>
+  <li>必须跨域，不跨域不能跳转</li>
+</ul>
+
+<p><b>安卓6.0之后有app links，intent-filter中设置scheme、host、path</b></p>
+
+<h2>Deferred DeepLink</h2>
+
+<p>Deferred DeepLink本质上的技术还是Deeplink技术，可以理解为一套可追踪的解决唤醒解决方案，一般由第三方实现如facebook、appflyer。</p>
+
+<p><b>Android</b></p>
+<ul>
+  <li>Google Play Referrer</li>
+  <li>Google Advertising ID</li>
+</ul>
+
+<p><b> IOS </b></p>
+
+<ul>
+  <li>DFA</li>
+  <li>Fingerprinting</li>
+  <li>模糊匹配（Device Name、Device Type、OS Version、IP…）</li>
+</ul>
+
+<p><b>Deferred Link原理</b></p>
+
+<p>以Referrer为例，如下图
+其他方式Android/IOS区别在于First open判断的数据不一样。</p>
+
+<p><img src="/assets/images/deffered_deeplink.png" alt="" /></p>
+
+<h1>App Link优化</h1>
+
+<ul>
+  <li>浏览不间断性、流畅性(h5浏览；h5-&gt;app浏览)。</li>
+  <li>Link投放前即通过有效性验证。</li>
+  <li>记录跟踪唤起-&gt;解析-&gt;跳转-&gt;落地页流程。</li>
+  <li>Link解析跟踪。</li>
+  <li>跳转流程跟踪（Router）。</li>
+  <li>落地页内容有效性跟踪。</li>
+  <li>健全的报警机制（根据第二点的流程）。</li>
+</ul>
+:ET

@@ -4,7 +4,7 @@
   <id>/</id>
   <title>Morse</title>
   <subtitle>A minimal, portfolio, sidebar, bootstrap Jekyll theme with responsive web design and focuses on text presentation.</subtitle>
-  <updated>2021-07-27T22:38:49+08:00</updated>
+  <updated>2021-07-27T22:46:49+08:00</updated>
   <author>
     <name>your_full_name</name>
     <uri>/</uri>
@@ -24,7 +24,7 @@
     <link href="/posts/workflow-sso/" rel="alternate" type="text/html" title="OAuth2.0认证授权workflow" />
     <published>2019-04-01T00:00:00+08:00</published>
   
-    <updated>2019-06-30T18:17:55+08:00</updated>
+    <updated>2021-07-27T22:39:13+08:00</updated>
   
     <id>/posts/workflow-sso/</id>
     <content src="/posts/workflow-sso/" />
@@ -74,7 +74,7 @@ SSO这是一个概念方案，其中有我们经常听到的著名的耶鲁大�
     <link href="/posts/threading/" rel="alternate" type="text/html" title="安卓并发编程全解析" />
     <published>2019-03-27T00:00:00+08:00</published>
   
-    <updated>2019-03-27T22:26:45+08:00</updated>
+    <updated>2021-07-27T22:39:13+08:00</updated>
   
     <id>/posts/threading/</id>
     <content src="/posts/threading/" />
@@ -121,7 +121,7 @@ cmd: adb pull data/anr/traces.txt ~/Downloads/anr/
     <link href="/posts/android-codereview/" rel="alternate" type="text/html" title="Android Code Review" />
     <published>2019-02-27T00:00:00+08:00</published>
   
-    <updated>2019-11-07T14:46:17+08:00</updated>
+    <updated>2021-07-27T22:39:13+08:00</updated>
   
     <id>/posts/android-codereview/</id>
     <content src="/posts/android-codereview/" />
@@ -188,7 +188,7 @@ List&amp;lt;Product&amp;gt; getAllLocale(){
     <link href="/posts/applink/" rel="alternate" type="text/html" title="Applink" />
     <published>2019-01-15T00:00:00+08:00</published>
   
-    <updated>2019-05-15T14:01:01+08:00</updated>
+    <updated>2021-07-27T22:39:13+08:00</updated>
   
     <id>/posts/applink/</id>
     <content src="/posts/applink/" />
@@ -265,7 +265,7 @@ iOS Universal Links
     <link href="/posts/mask/" rel="alternate" type="text/html" title="Mask掩码运算及其应用" />
     <published>2018-12-16T00:00:00+08:00</published>
   
-    <updated>2019-05-15T13:41:16+08:00</updated>
+    <updated>2021-07-27T22:39:13+08:00</updated>
   
     <id>/posts/mask/</id>
     <content src="/posts/mask/" />
