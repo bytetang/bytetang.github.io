@@ -21,7 +21,8 @@ Use CountDownTimer.  Handle the time on `onTick()` callback function. The callba
 <b>The Lifecycle of Timer and CountDownTimer</b>
 
 For Timer, after the last live reference to a Timer object goes away and all outstanding tasks have completed execution, the timer's task execution thread terminates gracefully (and becomes subject to garbage collection). However, this can take arbitrarily long to occur. Reference to 
-https://developer.android.com/reference/java/util/Timer. 
+
+[https://developer.android.com/reference/java/util/Timer](). 
 
 So we know that Timer might not recycle automatically as we expected. 
 
@@ -76,7 +77,7 @@ override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 Test scroll the list to bottom, then back to the top of the page.
 
-Check the run result here: https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing
+Check the run result here: [https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing]()
 
 
 You can find the count-down text performs not as expected and flash continuously, Seems another timer still updates the same item view. onBindViewHolder event reset the Timer when the RecyclerView starts to reuse, so the countDownTimer value be covered with a new instance,  but what causes the text flash?
@@ -98,7 +99,7 @@ If you want to countdown from the last time, save the last time on OnViewDetache
 # Summaries
 
 The core of the approach to resolve the Timer leak is simple:
-<>Call Timer cancel at the right time!!!</b>
+<b>Call Timer cancel at the right time!!!</b>
 
 - For Activity, cancel the Timer in `OnDestory()` , for Fragment cancel in `onDestroyView()`
 - For RecyclerView or GridView, cancel and release Timer in     `onViewDetachedFromWindow()` or `onViewRecycled()`
