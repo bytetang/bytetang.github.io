@@ -1,9 +1,9 @@
 ---
 title: "Android Timer Work Mechanism And Usage Guideline"
 author: Morse
-date: 2019-05-27
+date: 2021-05-27
 categories: [Blogging, Android]
-tags: [Timer, Thread]
+tags: [Timer, Thread, architecture]
 math: true
 mermaid: true
 ---
