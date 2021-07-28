@@ -22,7 +22,7 @@ Use CountDownTimer.  Handle the time on `onTick()` callback function. The callba
 
 For Timer, after the last live reference to a Timer object goes away and all outstanding tasks have completed execution, the timer's task execution thread terminates gracefully (and becomes subject to garbage collection). However, this can take arbitrarily long to occur. Reference to 
 
-[https://developer.android.com/reference/java/util/Timer](). 
+[https://developer.android.com/reference/java/util/Timer](https://developer.android.com/reference/java/util/Timer). 
 
 So we know that Timer might not recycle automatically as we expected. 
 
@@ -77,7 +77,7 @@ override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 Test scroll the list to bottom, then back to the top of the page.
 
-Check the run result here: [https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing]()
+Check the run result here: [https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing](https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing)
 
 
 You can find the count-down text performs not as expected and flash continuously, Seems another timer still updates the same item view. onBindViewHolder event reset the Timer when the RecyclerView starts to reuse, so the countDownTimer value be covered with a new instance,  but what causes the text flash?
