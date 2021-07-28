@@ -13,7 +13,7 @@ mermaid: true
 Timer components are used for a time countdown in events and campaigns like rewards preview entries, tournament bucket, and tournament all-in-one list, invite friend events and so on. But it's dangerous if developers are not familiar with it. It's necessary to define the guideline for the usage of the timer. And this doc will list the cases we had faced in the past.
 
 
-<b>How to do the countdown work?</b>
+<b>How does the countdown work?</b>
 
 Use Timer scheduleAtFixedRate ,  execute tasks on `run()` of TimerTask class. multiple threads can share a single Timer object without the need for external synchronization.
 Use CountDownTimer.  Handle the time on `onTick()` callback function. The callback is a synchronized block 
