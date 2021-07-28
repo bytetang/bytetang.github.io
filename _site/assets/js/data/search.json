@@ -1,6 +1,21 @@
 [
   
   {
+    "title": "Android Timer Work Mechanism And Usage Guideline",
+    "url": "/posts/Timer-Work-Mechanism/",
+    "categories": "Blogging, Android",
+    "tags": "Timer, Thread",
+    "date": "2019-05-27 00:00:00 +0800",
+    
+
+
+
+
+
+    "snippet": "BackgroundTimer components are used for a time countdown in events and campaigns like rewards preview entries, tournament bucket, and tournament all-in-one list, invite friend events and so on. But it’s dangerous if developers are not familiar with it. It’s necessary to define the guideline for t..."
+  },
+  
+  {
     "title": "OAuth2.0认证授权workflow",
     "url": "/posts/workflow-sso/",
     "categories": "Blogging, Foundation",

@@ -45,7 +45,7 @@ const resource = [
 const allowedDomains = [
   
 
-  '',
+  'bytetang.github.io/',
 
   'fonts.gstatic.com',
   'fonts.googleapis.com',

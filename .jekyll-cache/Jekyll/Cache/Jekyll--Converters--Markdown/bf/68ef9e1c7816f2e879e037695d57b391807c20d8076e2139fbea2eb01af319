@@ -1,0 +1,91 @@
+I"b<h1 id="background">Background</h1>
+
+<p>Timer components are used for a time countdown in events and campaigns like rewards preview entries, tournament bucket, and tournament all-in-one list, invite friend events and so on. But it’s dangerous if developers are not familiar with it. It’s necessary to define the guideline for the usage of the timer. And this doc will list the cases we had faced in the past.</p>
+
+<p><b>How to do the countdown work?</b></p>
+
+<p>Use Timer scheduleAtFixedRate ,  execute tasks on <code class="language-plaintext highlighter-rouge">run()</code> of TimerTask class. multiple threads can share a single Timer object without the need for external synchronization.
+Use CountDownTimer.  Handle the time on <code class="language-plaintext highlighter-rouge">onTick()</code> callback function. The callback is a synchronized block</p>
+
+<p><b>The Lifecycle of Timer and CountDownTimer</b></p>
+
+<p>For Timer, after the last live reference to a Timer object goes away and all outstanding tasks have completed execution, the timer’s task execution thread terminates gracefully (and becomes subject to garbage collection). However, this can take arbitrarily long to occur. Reference to 
+https://developer.android.com/reference/java/util/Timer.</p>
+
+<p>So we know that Timer might not recycle automatically as we expected.</p>
+
+<p>For  CountDownTimer,  when calling the <code class="language-plaintext highlighter-rouge">start()</code> function.  The handler will send a message to the looper interval at the fixed time.  Execute on <code class="language-plaintext highlighter-rouge">onTicket()</code> when the <code class="language-plaintext highlighter-rouge">handleMessage()</code> . the onTicket is executed in a thread-safe way.   But the handler won’t stop until the <code class="language-plaintext highlighter-rouge">cancel()</code> call.</p>
+
+<h1 id="examples">Examples</h1>
+
+<h2 id="1-timer-leak-in-activity--fragment--dialog">1. Timer Leak in Activity / Fragment / Dialog</h2>
+
+<p>A task will be added into taskQuene when calling the sched or scheduleXX function.</p>
+
+<p>The main looper thread consumes the task queue continuously. If the task finishes,  This task reference will be removed from the task queue. That’s why the task thread can be terminated peacefully.</p>
+
+<p><b>When the leak occurs</b></p>
+
+<p>when the task is running, but the host page is destroyed.  Timer doesn’t know when the page has been destroyed,  so the task keeps running,  the task might hold the page reference, causing the page reference leak. Which we expect is that the task also needs to be terminal.</p>
+
+<p><b>How to resolve</b></p>
+
+<p>Calling the <code class="language-plaintext highlighter-rouge">cancel()</code> when the Activity <code class="language-plaintext highlighter-rouge">OnDestroy()</code>.  <code class="language-plaintext highlighter-rouge">Cancel()</code> function will clear the task queue.
+All the references will be released,  and this is a thread-safe option.</p>
+
+<h2 id="2-timer-used-in-recyclerview">2. Timer used in RecyclerView</h2>
+
+<p><b>ViewHolder lifecycle</b></p>
+
+<p>First we must know the recycling mechanism of RecyclerView. It’s pretty different from the ListView.</p>
+
+<p>When there is a new set of data to display on the screen, <code class="language-plaintext highlighter-rouge">onBindViewHolder</code> will be triggered to bind the data to the new item views for the user.But when these become invisible on screen (user scroll view away), the invisible views will be removed from the parent view(RecyclerView). Note the ViewHolder might be kept in memory for better performance,so at the time the variables have not been recycled yet.</p>
+
+<p>If the user scrolls back to the previous item view, the <code class="language-plaintext highlighter-rouge">onBindViewHolder</code> will be triggered again. Developers need to rebind the ViewHolder data, but it might be obtained from the cached <code class="language-plaintext highlighter-rouge">ViewHolder</code>.</p>
+
+<p>Generally, When the ViewHolder is reused, resetting the ViewHolder fields will refresh the data and bind to the new views. So it’s always right whatever the user scrolls.</p>
+
+<p>Then, what will happen when a timer is kept in the ViewHolder?</p>
+
+<p>A ViewHolder with a CountDownTimer</p>
+
+<p><img width="521" alt="image" src="https://user-images.githubusercontent.com/6038077/127305083-99cf61c4-9158-4b7e-9c64-e0e52ddd7cb7.png" /></p>
+
+<p>The bindViewData function called by onBindViewHolder</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">override</span> <span class="n">fun</span> <span class="nf">onBindViewHolder</span><span class="o">(</span><span class="nl">holder:</span> <span class="nc">ViewHolder</span><span class="o">,</span> <span class="nl">position:</span> <span class="nc">Int</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">holder</span><span class="o">.</span><span class="na">bindViewData</span><span class="o">(</span><span class="s">"Timer$position"</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Test scroll the list to bottom, then back to the top of the page.</p>
+
+<p>Check the run result here: https://drive.google.com/file/d/1G0iM1DtwV-4GVSk8BZqxFA35WjNjnhi6/view?usp=sharing</p>
+
+<p>You can find the count-down text performs not as expected and flash continuously, Seems another timer still updates the same item view. onBindViewHolder event reset the Timer when the RecyclerView starts to reuse, so the countDownTimer value be covered with a new instance,  but what causes the text flash?</p>
+
+<p><b>Root Reason</b></p>
+
+<p>As the “ViewHolder Behavior” chapter said, the ViewHolder might be cached and reused, then the timer still kept in memory, through the countDownTimer be reset to a new instance,  but the timer differs with other components.  CountDownTimer maintain a thread looper and interval send the message to the onTicket() , the lifecycle of looper longer than ViewHolder, if ViewHolder need to recycled or reset, the memory can’t released since the anonymous CountDownTimer caused the leak happened, so there are multiple CountTimer exists. That’s why the text flashes.</p>
+
+<p><b>How to resolve</b></p>
+
+<p>Manually cancel the timer when the ViewHolder recycle or detach</p>
+
+<p><img width="513" alt="image" src="https://user-images.githubusercontent.com/6038077/127305416-04b6d02a-903a-4e41-be64-87112e2278bd.png" /></p>
+
+<p>If you want to countdown from the last time, save the last time on OnViewDetachedFromWindow() and recover the last time countdown on onViewAttachedToWindow is a good choice.</p>
+
+<h1 id="summaries">Summaries</h1>
+
+<p>The core of the approach to resolve the Timer leak is simple:
+&lt;&gt;Call Timer cancel at the right time!!!&lt;/b&gt;</p>
+
+<ul>
+  <li>For Activity, cancel the Timer in <code class="language-plaintext highlighter-rouge">OnDestory()</code> , for Fragment cancel in <code class="language-plaintext highlighter-rouge">onDestroyView()</code></li>
+  <li>For RecyclerView or GridView, cancel and release Timer in     <code class="language-plaintext highlighter-rouge">onViewDetachedFromWindow()</code> or <code class="language-plaintext highlighter-rouge">onViewRecycled()</code></li>
+</ul>
+:ET

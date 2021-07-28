@@ -1,17 +1,17 @@
 
 
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <id>/</id>
+  <id>https://bytetang.github.io//</id>
   <title>Morse</title>
   <subtitle>A minimal, portfolio, sidebar, bootstrap Jekyll theme with responsive web design and focuses on text presentation.</subtitle>
-  <updated>2021-07-27T22:59:41+08:00</updated>
+  <updated>2021-07-28T18:19:15+08:00</updated>
   <author>
     <name>your_full_name</name>
-    <uri>/</uri>
+    <uri>https://bytetang.github.io//</uri>
   </author>
-  <link rel="self" type="application/atom+xml" href="/feed.xml"/>
+  <link rel="self" type="application/atom+xml" href="https://bytetang.github.io//feed.xml"/>
   <link rel="alternate" type="text/html" hreflang="en"
-    href="/"/>
+    href="https://bytetang.github.io//"/>
   <generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator>
   <rights> © 2021 your_full_name </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
@@ -20,14 +20,54 @@
 
   
   <entry>
+    <title>Android Timer Work Mechanism And Usage Guideline</title>
+    <link href="https://bytetang.github.io//posts/Timer-Work-Mechanism/" rel="alternate" type="text/html" title="Android Timer Work Mechanism And Usage Guideline" />
+    <published>2019-05-27T00:00:00+08:00</published>
+  
+    <updated>2019-05-27T00:00:00+08:00</updated>
+  
+    <id>https://bytetang.github.io//posts/Timer-Work-Mechanism/</id>
+    <content src="https://bytetang.github.io//posts/Timer-Work-Mechanism/" />
+    <author>
+      <name>Morse</name>
+    </author>
+
+  
+    
+    <category term="Blogging" />
+    
+    <category term="Android" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      Background
+
+Timer components are used for a time countdown in events and campaigns like rewards preview entries, tournament bucket, and tournament all-in-one list, invite friend events and so on. But it’s dangerous if developers are not familiar with it. It’s necessary to define the guideline for the usage of the timer. And this doc will list the cases we had faced in the past.
+
+How to do the c...
+    </summary>
+  
+
+  </entry>
+
+  
+  <entry>
     <title>OAuth2.0认证授权workflow</title>
-    <link href="/posts/workflow-sso/" rel="alternate" type="text/html" title="OAuth2.0认证授权workflow" />
+    <link href="https://bytetang.github.io//posts/workflow-sso/" rel="alternate" type="text/html" title="OAuth2.0认证授权workflow" />
     <published>2019-04-01T00:00:00+08:00</published>
   
     <updated>2021-07-27T22:39:13+08:00</updated>
   
-    <id>/posts/workflow-sso/</id>
-    <content src="/posts/workflow-sso/" />
+    <id>https://bytetang.github.io//posts/workflow-sso/</id>
+    <content src="https://bytetang.github.io//posts/workflow-sso/" />
     <author>
       <name>Morse</name>
     </author>
@@ -71,13 +111,13 @@ SSO这是一个概念方案，其中有我们经常听到的著名的耶鲁大�
   
   <entry>
     <title>安卓并发编程全解析</title>
-    <link href="/posts/threading/" rel="alternate" type="text/html" title="安卓并发编程全解析" />
+    <link href="https://bytetang.github.io//posts/threading/" rel="alternate" type="text/html" title="安卓并发编程全解析" />
     <published>2019-03-27T00:00:00+08:00</published>
   
     <updated>2021-07-27T22:39:13+08:00</updated>
   
-    <id>/posts/threading/</id>
-    <content src="/posts/threading/" />
+    <id>https://bytetang.github.io//posts/threading/</id>
+    <content src="https://bytetang.github.io//posts/threading/" />
     <author>
       <name>Morse</name>
     </author>
@@ -118,13 +158,13 @@ cmd: adb pull data/anr/traces.txt ~/Downloads/anr/
   
   <entry>
     <title>Android Code Review</title>
-    <link href="/posts/android-codereview/" rel="alternate" type="text/html" title="Android Code Review" />
+    <link href="https://bytetang.github.io//posts/android-codereview/" rel="alternate" type="text/html" title="Android Code Review" />
     <published>2019-02-27T00:00:00+08:00</published>
   
     <updated>2021-07-27T22:39:13+08:00</updated>
   
-    <id>/posts/android-codereview/</id>
-    <content src="/posts/android-codereview/" />
+    <id>https://bytetang.github.io//posts/android-codereview/</id>
+    <content src="https://bytetang.github.io//posts/android-codereview/" />
     <author>
       <name>Morse</name>
     </author>
@@ -185,13 +225,13 @@ List&amp;lt;Product&amp;gt; getAllLocale(){
   
   <entry>
     <title>Applink</title>
-    <link href="/posts/applink/" rel="alternate" type="text/html" title="Applink" />
+    <link href="https://bytetang.github.io//posts/applink/" rel="alternate" type="text/html" title="Applink" />
     <published>2019-01-15T00:00:00+08:00</published>
   
     <updated>2021-07-27T22:39:13+08:00</updated>
   
-    <id>/posts/applink/</id>
-    <content src="/posts/applink/" />
+    <id>https://bytetang.github.io//posts/applink/</id>
+    <content src="https://bytetang.github.io//posts/applink/" />
     <author>
       <name>Morse</name>
     </author>
@@ -254,55 +294,6 @@ Universal Link
 
 iOS Universal Links
 ...
-    </summary>
-  
-
-  </entry>
-
-  
-  <entry>
-    <title>Mask掩码运算及其应用</title>
-    <link href="/posts/mask/" rel="alternate" type="text/html" title="Mask掩码运算及其应用" />
-    <published>2018-12-16T00:00:00+08:00</published>
-  
-    <updated>2021-07-27T22:39:13+08:00</updated>
-  
-    <id>/posts/mask/</id>
-    <content src="/posts/mask/" />
-    <author>
-      <name>Morse</name>
-    </author>
-
-  
-    
-    <category term="Blogging" />
-    
-    <category term="Foundation" />
-    
-  
-
-  
-    <summary>
-      
-
-
-
-
-
-      我们在阅读源码的时候经常会看到有mask flag的与或运算，往往出现在判断的语句中，另我十分的困惑。
-
-一、认识Mask flag
-
-    /**
-     * Returns the enabled status for this view. The interpretation of the
-     * enabled state varies by subclass.
-     *
-     * @return True if this view is enabled, false otherwise.
-     */
-    @ViewDebug.ExportedProperty
-    public boolean isEnabled() {
-        return (mViewFlags &amp;amp; ENABLED_MASK) == ENABLED;
-    ...
     </summary>
   
 

@@ -36,18 +36,18 @@
 <meta property="og:locale" content="en" />
 <meta name="description" content="Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。" />
 <meta property="og:description" content="Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。" />
-<link rel="canonical" href="/posts/android-ci/" />
-<meta property="og:url" content="/posts/android-ci/" />
+<link rel="canonical" href="https://bytetang.github.io//posts/android-ci/" />
+<meta property="og:url" content="https://bytetang.github.io//posts/android-ci/" />
 <meta property="og:site_name" content="Morse" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2018-03-26T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="从零搭建Android持续集成平台" />
-<meta name="twitter:site" content="@twitter_username" />
+<meta name="twitter:site" content="@Morse84538291" />
 <meta name="twitter:creator" content="@Morse" />
 <meta name="google-site-verification" content="google_meta_tag_verification" />
 <script type="application/ld+json">
-{"url":"/posts/android-ci/","author":{"@type":"Person","name":"Morse"},"@type":"BlogPosting","description":"Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。","headline":"从零搭建Android持续集成平台","dateModified":"2021-07-27T22:39:13+08:00","datePublished":"2018-03-26T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"/posts/android-ci/"},"@context":"https://schema.org"}</script>
+{"url":"https://bytetang.github.io//posts/android-ci/","author":{"@type":"Person","name":"Morse"},"@type":"BlogPosting","description":"Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。","headline":"从零搭建Android持续集成平台","dateModified":"2021-07-27T22:39:13+08:00","datePublished":"2018-03-26T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://bytetang.github.io//posts/android-ci/"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -192,7 +192,7 @@
       
 
       
-      <a href="https://github.com/github_username" aria-label="github"
+      <a href="https://github.com/bytetang" aria-label="github"
         class="order-3"
         target="_blank" rel="noopener">
         <i class="fab fa-github-alt"></i>
@@ -203,7 +203,7 @@
       
 
       
-      <a href="https://twitter.com/twitter_username" aria-label="twitter"
+      <a href="https://twitter.com/Morse84538291" aria-label="twitter"
         class="order-4"
         target="_blank" rel="noopener">
         <i class="fab fa-twitter"></i>
@@ -1245,19 +1245,19 @@ build.gradle中的依赖版本</p>
 
     
       
-        <a href="https://twitter.com/intent/tweet?text=从零搭建Android持续集成平台 - Morse&url=/posts/android-ci/" data-toggle="tooltip" data-placement="top"
+        <a href="https://twitter.com/intent/tweet?text=从零搭建Android持续集成平台 - Morse&url=https://bytetang.github.io//posts/android-ci/" data-toggle="tooltip" data-placement="top"
           title="Twitter" target="_blank" rel="noopener" aria-label="Twitter">
           <i class="fa-fw fab fa-twitter"></i>
         </a>
     
       
-        <a href="https://www.facebook.com/sharer/sharer.php?title=从零搭建Android持续集成平台 - Morse&u=/posts/android-ci/" data-toggle="tooltip" data-placement="top"
+        <a href="https://www.facebook.com/sharer/sharer.php?title=从零搭建Android持续集成平台 - Morse&u=https://bytetang.github.io//posts/android-ci/" data-toggle="tooltip" data-placement="top"
           title="Facebook" target="_blank" rel="noopener" aria-label="Facebook">
           <i class="fa-fw fab fa-facebook-square"></i>
         </a>
     
       
-        <a href="https://telegram.me/share?text=从零搭建Android持续集成平台 - Morse&url=/posts/android-ci/" data-toggle="tooltip" data-placement="top"
+        <a href="https://telegram.me/share?text=从零搭建Android持续集成平台 - Morse&url=https://bytetang.github.io//posts/android-ci/" data-toggle="tooltip" data-placement="top"
           title="Telegram" target="_blank" rel="noopener" aria-label="Telegram">
           <i class="fa-fw fab fa-telegram"></i>
         </a>
@@ -1400,6 +1400,47 @@ build.gradle中的依赖版本</p>
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -1540,6 +1581,11 @@ build.gradle中的依赖版本</p>
     
     
       
+    
+  
+    
+    
+    
     
   
     
@@ -1565,6 +1611,9 @@ build.gradle中的依赖版本</p>
         <a class="post-tag" href="/tags/ci/">CI</a>
       
         
+        <a class="post-tag" href="/tags/thread/">Thread</a>
+      
+        
         <a class="post-tag" href="/tags/applink/">Applink</a>
       
         
@@ -1577,7 +1626,7 @@ build.gradle中的依赖版本</p>
         <a class="post-tag" href="/tags/mask/">Mask</a>
       
         
-        <a class="post-tag" href="/tags/thread/">Thread</a>
+        <a class="post-tag" href="/tags/timer/">Timer</a>
       
 
       </div>
@@ -1621,6 +1670,19 @@ build.gradle中的依赖版本</p>
 
 
 
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
   
@@ -2009,6 +2071,47 @@ DOMESTIC.equals(domestic);
     
     
     
+  
+    
+    
+    
+    
+      
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
+      
+        
+        
+
+  
+    
+    
+    
+    
+  
+    
+    
+    
+    
       
         
         
@@ -2149,6 +2252,11 @@ DOMESTIC.equals(domestic);
     
     
       
+    
+  
+    
+    
+    
     
   
     
@@ -2169,6 +2277,9 @@ DOMESTIC.equals(domestic);
         <a class="post-tag" href="/tags/ci/">CI</a>
       
         
+        <a class="post-tag" href="/tags/thread/">Thread</a>
+      
+        
         <a class="post-tag" href="/tags/applink/">Applink</a>
       
         
@@ -2181,7 +2292,7 @@ DOMESTIC.equals(domestic);
         <a class="post-tag" href="/tags/mask/">Mask</a>
       
         
-        <a class="post-tag" href="/tags/thread/">Thread</a>
+        <a class="post-tag" href="/tags/timer/">Timer</a>
       
 
     </div>
@@ -2247,7 +2358,7 @@ SimpleJekyllSearch({
   searchInput: document.getElementById('search-input'),
   resultsContainer: document.getElementById('search-results'),
   json: '/assets/js/data/search.json',
-  searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">  <a href="{url}">{title}</a>  <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">    {categories}    {tags}  </div>  <p>{snippet}</p></div>',
+  searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">  <a href="https://bytetang.github.io/{url}">{title}</a>  <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">    {categories}    {tags}  </div>  <p>{snippet}</p></div>',
   noResultsText: '<p class="mt-5">Oops! No result founds.</p>',
   templateMiddleware: function(prop, value, template) {
     if (prop === 'categories') {
